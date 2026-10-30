@@ -1,0 +1,160 @@
+<html lang="en-us"><script src="{{cookiecutter.cdn}}pythons.js" type=module id="site" data-python="python{{cookiecutter.PYBUILD}}" data-LINES=42 data-COLUMNS=132 data-os="vtx,snd,gui" async defer>#<!--
+import sys, asyncio, platform
+from pathlib import Path
+
+async def custom_site():
+    import embed
+    platform.document.body.style.background = "#000000"
+    platform.window.transfer.hidden = true
+    platform.window.canvas.style.visibility = "visible"
+
+    bundle = "{{cookiecutter.archive}}"
+    appdir = Path(f"/data/data/{bundle}")
+    appdir.mkdir()
+
+    if platform.window.location.host.find('.itch.zone') > 0:
+        import zipfile
+        async with platform.fopen("{{cookiecutter.archive}}.apk", "rb") as archive:
+            with zipfile.ZipFile(archive) as zip_ref:
+                zip_ref.extractall(appdir.as_posix())
+    else:
+        import tarfile
+        async with platform.fopen("{{cookiecutter.archive}}.tar.gz", "rb") as archive:
+            tar = tarfile.open(fileobj=archive, mode="r:gz")
+            tar.extractall(path=appdir.as_posix(), filter='tar')
+            tar.close()
+
+    platform.run_main(PyConfig, loaderhome=appdir / "assets", loadermain=None)
+
+    while embed.counter() < 0:
+        await asyncio.sleep(.1)
+
+    main = appdir / "assets" / "main.py"
+
+    if not platform.window.MM.UME:
+        __import__(__name__).__file__ = main
+        platform.window.transfer.style.display = "none"
+        platform.window.infobox.innerText = "Click to Play"
+        platform.window.infobox.style.display = "block"
+
+        while not platform.window.MM.UME:
+            await asyncio.sleep(.1)
+
+    await TopLevel_async_handler.start_toplevel(platform.shell, console=False)
+    __import__(__name__).__file__ = main
+
+    await shell.source(main, callback=lambda pkg: setattr(platform.window.infobox, "innerText", f"Loading {pkg}..."))
+
+    platform.window.infobox.style.display = "none"
+    if hasattr(platform.window, "loader_container"):
+        platform.window.loader_container.style.display = "none"
+    platform.window.config.gui_divider = 1
+    platform.window.window_resize()
+    shell.interactive()
+
+asyncio.run(custom_site())
+
+# BEGIN BLOCK
+# =============================================================================
+# --></script><head><!--
+    {%- if cookiecutter.comment != "" -%}
+{{cookiecutter.comment}}
+    {% endif %}
+--><script type="application/javascript">
+// END BLOCK
+
+config = {
+    xtermjs : "{{cookiecutter.xtermjs}}",
+    _sdl2 : "canvas",
+    user_canvas : 0,
+    user_canvas_managed : 0,
+    gui_divider : 2,
+    ume_block : {{cookiecutter.ume_block}},
+    can_close : {{cookiecutter.can_close}},
+    archive : "{{cookiecutter.archive}}",
+    gui_debug : 0,
+    cdn : "{{cookiecutter.cdn}}",
+    autorun : {{cookiecutter.autorun}},
+    PYBUILD : "{{cookiecutter.PYBUILD}}",
+    fb_ar   : 1.77,
+    fb_width : "{{cookiecutter.width}}",
+    fb_height : "{{cookiecutter.height}}"
+}
+
+function show_infobox() {}
+</script>
+
+    <title>{{cookiecutter.title}}</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png" sizes="2048x2048">
+    <link rel="apple-touch-icon" href="favicon.png">
+
+    <style>
+        *, *:focus, *:focus-visible { box-sizing: border-box; margin: 0; padding: 0; outline: none !important; box-shadow: none !important; -webkit-tap-highlight-color: transparent !important; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; background-color: #000000; color: #d1d5db; height: 100vh; width: 100vw; overflow: hidden; display: flex; align-items: center; justify-content: center; -webkit-font-smoothing: antialiased; }
+        #loader_container { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .game-logo { width: 256px; height: 256px; object-fit: contain; margin-bottom: 20px; user-select: none; }
+        .game-title { font-size: 18px; font-weight: 600; letter-spacing: 0.8px; color: #e5e7eb; text-transform: uppercase; margin-bottom: 20px; user-select: none; }
+        #transfer { display: flex; flex-direction: column; align-items: center; }
+        #status, #infobox { font-size: 19px; font-weight: 600; color: #d1d5db; letter-spacing: 0.4px; user-select: none; cursor: pointer; transition: color 0.2s ease; }
+        #status { margin-bottom: 14px; }
+        #infobox { display: none; padding: 8px 16px; }
+        #status:hover, #infobox:hover { color: #ffffff; }
+        progress#progress { appearance: none; -webkit-appearance: none; width: 220px; height: 4px; border-radius: 2px; overflow: hidden; background: #1a1e26; border: none; }
+        progress#progress::-webkit-progress-bar { background-color: #1a1e26; }
+        progress#progress::-webkit-progress-value, progress#progress::-moz-progress-bar { background-color: #4b5563; }
+        canvas, canvas.emscripten, #canvas, #canvas3d { border: 0 none !important; background-color: #000000; width: 100%; height: 100%; z-index: 5; position: absolute; top: 0; left: 0; }
+    </style>
+
+    <script src="{{cookiecutter.cdn}}/browserfs.min.js"></script>
+</head>
+
+<body>
+    <div id="loader_container">
+        <img src="logo.png" class="game-logo" alt="Logo" onerror="this.src='favicon.png'">
+        <div class="game-title">{{cookiecutter.title}}</div>
+        <div id="transfer">
+            <div id="status">Loading...</div>
+            <progress value="0" max="100" id="progress"></progress>
+        </div>
+        <div id="infobox">Loading...</div>
+    </div>
+
+    <canvas class="emscripten" id="canvas" width="1px" height="1px" oncontextmenu="event.preventDefault()" tabindex=1></canvas>
+    <canvas class="emscripten" id="canvas3d" width="{{cookiecutter.width}}px" height="{{cookiecutter.height}}px" oncontextmenu="event.preventDefault()" tabindex=1 hidden></canvas>
+
+    <div id="html"></div>
+    <div id="crt" hidden><div id="system" hidden></div><div id="box" hidden><div id="info"></div><iframe id="iframe" name="iframe" src="{{cookiecutter.cdn}}empty.html"></iframe></div></div>
+    <div id="dlg" hidden><input type="file" id="dlg_multifile" multiple accept="image/*"></div>
+    <div id="pyconsole" hidden><div id="terminal" tabIndex=1 align="left"></div></div>
+
+    <script type="application/javascript">
+    globalThis.__canvas_resized = (self, ecw, ech) => {}
+
+    (function() {
+        const infobox = document.getElementById("infobox");
+        const transfer = document.getElementById("transfer");
+        if (infobox && transfer) {
+            const obs = new MutationObserver(() => {
+                if (infobox.style.display !== "none" && (infobox.innerText || "").includes("Click to Play")) {
+                    transfer.style.display = "none";
+                }
+            });
+            obs.observe(infobox, { attributes: true, attributeFilter: ["style"] });
+        }
+    })();
+
+    async function custom_onload(debug_hidden) {
+        document.getElementById("pyconsole").hidden = true;
+        document.getElementById("system").hidden = true;
+        document.getElementById("box").hidden = true;
+    }
+    function custom_prerun(){}
+    function custom_postrun(){}
+    function info_inline(data){ document.getElementById("info").innerHTML = data; }
+    function frame_online(url) { window.frames["iframe"].location = url; }
+    </script>
+</body>
+</html>

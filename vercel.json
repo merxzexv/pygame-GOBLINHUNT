@@ -1,0 +1,15 @@
+{
+  "outputDirectory": "build/web",
+  "buildCommand": "python -m pip install --break-system-packages pygbag && python build.py",
+  "cleanUrls": true,
+  "framework": null,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Cross-Origin-Opener-Policy", "value": "same-origin" },
+        { "key": "Cross-Origin-Embedder-Policy", "value": "credentialless" }
+      ]
+    }
+  ]
+}

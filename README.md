@@ -1,4 +1,4 @@
-# Goblin Slayer
+# [Goblin Slayer](https://slaygoblins.vercel.app)
 
 A 2D Pygame game where you survive endless goblin hordes using weapons, abilities, and upgrades.
 
@@ -7,7 +7,6 @@ A 2D Pygame game where you survive endless goblin hordes using weapons, abilitie
 * Player starts with 700 max HP.
 * Endless waves that become harder over time.
 * Multiple enemy types (Base Damage values):
-
   * **Goblins** (Base DMG: 10) – Fast and common.
   * **Shield Bosses** (Base DMG: 15) – Take reduced bullet damage.
   * **Healers** (Base DMG: 30) – Heal nearby enemies.
@@ -22,11 +21,12 @@ A 2D Pygame game where you survive endless goblin hordes using weapons, abilitie
   * **Very Big** (+30% Damage) – Drops 100 Gold
 
 * Special abilities (each requires a shop restore after a single use):
-
   * **Fireball** – Shoots a massive fireball that pierces enemies and cuts their max HP by 50%.
   * **Lightning** – Summons a thunderstorm that periodically stuns all enemies on screen.
   * **Freeze** – Freezes all enemies completely in place for several seconds.
 * Gold-based upgrade system for damage, fire rate, health, and ability restoration.
+
+---
 
 ## Controls
 
@@ -41,6 +41,8 @@ A 2D Pygame game where you survive endless goblin hordes using weapons, abilitie
 | S     | Restart (after death) |
 | Q     | Quit                  |
 
+---
+
 ## Shop
 
 | Key | Upgrade            | Cost         | Details                                          |
@@ -51,13 +53,30 @@ A 2D Pygame game where you survive endless goblin hordes using weapons, abilitie
 | 4   | Restore abilities  | 200 Gold     | Recharges all three abilities. Fixed cost.       |
 | R   | Reload Ammo        | 40 Gold      | Instantly maxes out your ammo (50). Fixed cost.  |
 
-## Requirements
 
-* Pygame
+---
 
-## Installation
+## Run Locally
+
+### 1. Run in Browser (WebAssembly)
+
+Install dependencies and run the local development server:
+
+```bash
+pip install -r requirements.txt
+python build.py
+python -m http.server 8000 --directory build/web
+```
+
+Then open your browser and navigate to: http://localhost:8000
+
+### 2. Run as a Desktop App
+
+Install dependencies and launch the desktop application:
 
 ```bash
 pip install -r requirements.txt
 python main.py
 ```
+
+---
